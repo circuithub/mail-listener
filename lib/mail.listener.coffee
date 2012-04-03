@@ -27,8 +27,8 @@ class MailListener extends EventEmitter
           else
             util.log "successfully opened mail box"            
             @imap.on "mail", (id) =>
-              @util "new mail arrived"
-              @emit "mail:arrived"              
+              util "new mail arrived with id #{id}"
+              @emit "mail:arrived", id 
               @imap.search ["UNSEEN"], (err, searchResults) =>
                 if err
                   util.log "error searching unseen emails #{error}"
