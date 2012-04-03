@@ -21,7 +21,7 @@ class MailListener extends EventEmitter
         @emit "error", err
       else
         util.log "successfully connected to mail server"
-        @emit "serverConnected"
+        @emit "server:connected"
         @imap.openBox "INBOX", false, (err) =>
           if err
             util.log "error opening mail box #{error}"
@@ -30,7 +30,7 @@ class MailListener extends EventEmitter
             util.log "successfully opened mail box"            
             @imap.on "mail", (id) =>
               util.log "new mail arrived with id #{id}"
-              @emit "mailArrived", id 
+              @emit "mail:arrived", id 
               @imap.search ["UNSEEN"], (err, searchResults) =>
                 if err
                   util.log "error searching unseen emails #{error}"
@@ -45,15 +45,14 @@ class MailListener extends EventEmitter
                   fetch.on "message", (msg) =>
                     parser = new MailParser
                     msg.on "data", (data) -> parser.write data.toString()
-                    parser.on "end", (mail) ->
+                    parser.on "end", (mail) =>
                       util.log "parsed mail" + util.inspect mail, false, 5
-                      console.log "emit is", @emit
-                      @emit "mailParsed", mail 
+                      @emit "mail:parsed", mail
                     msg.on "end", ->
                       util.log "fetched message: " + util.inspect(msg, false, 5)
                       parser.end()
   stop: =>
     @imap.logout =>
-      @emit "serverDisconnected"
+      @emit "server:disconnected"
 
 module.exports = MailListener       
