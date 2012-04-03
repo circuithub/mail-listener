@@ -13,6 +13,8 @@ class MailListener extends EventEmitter
       host: options.host
       port: options.port
       secure: options.secure
+
+  start: =>   
     @imap.connect (err) =>
       if err
         util.log "error connecting to mail server #{error}"
@@ -45,9 +47,13 @@ class MailListener extends EventEmitter
                     msg.on "data", (data) -> parser.write data.toString()
                     parser.on "end", (mail) ->
                       util.log "parsed mail" + util.inspect mail, false, 5
+                      console.log "emit is", @emit
                       @emit "mail:parsed", mail 
                     msg.on "end", ->
                       util.log "fetched message: " + util.inspect(msg, false, 5)
                       parser.end()
+  stop: =>
+    @imap.logout =>
+      @emit "server:disconnected"
 
 module.exports = MailListener       
