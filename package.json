@@ -1,8 +1,8 @@
 {
-  "author": "CircuitHub Team <team@circuithub.com> (circuithub.com)",
+  "author": "CircuitHub <developers@circuithub.com> (circuithub.com)",
   "name": "mail-listener",
   "description": "Mail listener library for node.js. Get notification when new email arrived.",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "repository": {
     "type": "git",
     "url": "git://github.com/circuithub/mail-listener.git"
