@@ -1,10 +1,8 @@
 # Overview
 
-Mail listener library for node.js. Get notification when new email arrived. Uses IMAP protocol.
+Mail listener library for node.js. Get notification when new email arrived to inbox. Uses IMAP protocol.
 
-We are using these libraries:
-[node-imap](https://github.com/mscdex/node-imap)
-[mailparser](https://github.com/andris9/mailparser) 
+We are using these libraries: [node-imap](https://github.com/mscdex/node-imap), [mailparser](https://github.com/andris9/mailparser).
 
 
 ## Use
@@ -45,6 +43,9 @@ mailListener.on "mail:parsed", (mail) ->
   console.log "parsed email with attachment", mail.attachments.length
   ...
 ```
+
+That's easy!
+
 
 ## Contributions
 
