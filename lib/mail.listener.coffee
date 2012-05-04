@@ -20,7 +20,7 @@ class MailListener extends EventEmitter
     # 1. connect to imap server  
     @imap.connect (err) =>
       if err
-        util.log "error connecting to mail server #{error}"
+        util.log "error connecting to mail server #{err}"
         @emit "error", err
       else
         util.log "successfully connected to mail server"
@@ -28,7 +28,7 @@ class MailListener extends EventEmitter
         # 2. open INBOX
         @imap.openBox "INBOX", false, (err) =>
           if err
-            util.log "error opening mail box #{error}"
+            util.log "error opening mail box #{err}"
             @emit "error", err
           else
             util.log "successfully opened mail box"            
@@ -39,7 +39,7 @@ class MailListener extends EventEmitter
               # 4. find all unseen emails 
               @imap.search ["UNSEEN"], (err, searchResults) =>
                 if err
-                  util.log "error searching unseen emails #{error}"
+                  util.log "error searching unseen emails #{err}"
                   @emit "error", err
                 else              
                   util.log "found #{searchResults.length} emails"
