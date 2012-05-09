@@ -64,4 +64,4 @@ class MailListener extends EventEmitter
     @imap.logout =>
       @emit "server:disconnected"
 
-module.exports = MailListener       
+module.exports = MailListener
