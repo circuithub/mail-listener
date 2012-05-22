@@ -4,6 +4,7 @@ Mail listener library for node.js. Get notification when new email arrived to in
 
 We are using these libraries: [node-imap](https://github.com/mscdex/node-imap), [mailparser](https://github.com/andris9/mailparser).
 
+Heavily inspired by [this gist](https://gist.github.com/1226809).
 
 ## Use
 
