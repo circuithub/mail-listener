@@ -58,7 +58,7 @@ We appreciate feedback!
 
 (The MIT License)
 
-Copyright (c) 2011 CircuitHub., https://circuithub.com/
+Copyright (c) 2011-2012 CircuitHub., https://circuithub.com/
 
 Permission is hereby granted, free of charge, to any person obtaining
 a copy of this software and associated documentation files (the
