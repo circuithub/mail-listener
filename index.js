@@ -1,1 +1,1 @@
-module.exports = require("./dist/mail.listener")
+module.exports = require("./dist/mail.listener");
