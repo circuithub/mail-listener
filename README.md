@@ -13,7 +13,8 @@ Install
 `npm install mail-listener`
 
 
-Code
+JavaScript Code:
+
 
 ```javascript
 
@@ -33,11 +34,9 @@ mailListener.on("server:connected", function(){
   console.log("imapConnected");
 });
   
-
 mailListener.on("server:error", function(error){
   console.log("imapError", error);
 });
-
 
 mailListener.on("mail:parsed", function(mail){
   // do something with mail object including attachments
@@ -47,6 +46,9 @@ mailListener.on("mail:parsed", function(mail){
 
 
 ```
+
+CoffeeScript Code:
+
 
 ``` coffee
 
