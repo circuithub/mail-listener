@@ -15,6 +15,39 @@ Install
 
 Code
 
+```javascript
+
+var MailListener = require("mail-listener");
+
+var mailListener = new MailListener({
+  username: "imap-username",
+  password: "imap-password",
+  host: "imap-host",
+  port: 993, // imap port
+  secure: true // use secure connection
+});
+
+mailListener.start();
+
+mailListener.on("server:connected", function(){
+  console.log("imapConnected");
+});
+  
+
+mailListener.on("server:error", function(error){
+  console.log("imapError", error);
+});
+
+
+mailListener.on("mail:parsed", function(mail){
+  // do something with mail object including attachments
+  console.log("emailParsed", mail.attachments);
+  // mail processing code goes here
+});
+
+
+```
+
 ``` coffee
 
 MailListener = require "mail-listener"
@@ -41,8 +74,8 @@ mailListener.on "error", (err) ->
 # mail arrived and was parsed by parser 
 mailListener.on "mail:parsed", (mail) ->
   # do something with mail object including attachments
-  console.log "parsed email with attachment", mail.attachments.length
-  ...
+  console.log "parsed email with attachment", mail.attachments
+  // mail processing code goes here
 ```
 
 That's easy!
