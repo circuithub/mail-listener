@@ -14,6 +14,7 @@ class MailListener extends EventEmitter
       host: options.host
       port: options.port
       secure: options.secure
+    @mailbox = options.mailbox || "INBOX"
 
   # start listener
   start: => 
@@ -26,12 +27,12 @@ class MailListener extends EventEmitter
         util.log "successfully connected to mail server"
         @emit "server:connected"
         # 2. open INBOX
-        @imap.openBox "INBOX", false, (err) =>
+        @imap.openBox @mailbox, false, (err) =>
           if err
-            util.log "error opening mail box #{err}"
+            util.log "error opening mail box '#{@mailbox}'  #{err}"
             @emit "error", err
           else
-            util.log "successfully opened mail box"            
+            util.log "successfully opened mail box #{@mailbox}"            
             # 3. listen for new emails in the inbox
             @imap.on "mail", (id) =>
               util.log "new mail arrived with id #{id}"
