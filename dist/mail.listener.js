@@ -50,33 +50,33 @@
                 util.log("new mail arrived with id " + id);
                 _this.emit("mail:arrived", id);
                 return _this.imap.search(["UNSEEN"], function(err, searchResults) {
-                  var fetch;
                   if (err) {
                     util.log("error searching unseen emails " + err);
                     return _this.emit("error", err);
                   } else {
                     util.log("found " + searchResults.length + " emails");
-                    fetch = _this.imap.fetch(searchResults, {
-                      markSeen: true,
-                      request: {
-                        headers: false,
-                        body: "full"
+                    return _this.imap.fetch(searchResults, {
+                      headers: {
+                        parse: false
+                      },
+                      body: true,
+                      cb: function(fetch) {
+                        return fetch.on("message", function(msg) {
+                          var parser;
+                          parser = new MailParser;
+                          parser.on("end", function(mail) {
+                            util.log("parsed mail" + util.inspect(mail, false, 5));
+                            return _this.emit("mail:parsed", mail);
+                          });
+                          msg.on("data", function(data) {
+                            return parser.write(data.toString());
+                          });
+                          return msg.on("end", function() {
+                            util.log("fetched message: " + util.inspect(msg, false, 5));
+                            return parser.end();
+                          });
+                        });
                       }
-                    });
-                    return fetch.on("message", function(msg) {
-                      var parser;
-                      parser = new MailParser;
-                      msg.on("data", function(data) {
-                        return parser.write(data.toString());
-                      });
-                      parser.on("end", function(mail) {
-                        util.log("parsed mail" + util.inspect(mail, false, 5));
-                        return _this.emit("mail:parsed", mail);
-                      });
-                      return msg.on("end", function() {
-                        util.log("fetched message: " + util.inspect(msg, false, 5));
-                        return parser.end();
-                      });
                     });
                   }
                 });

@@ -26,7 +26,7 @@ class MailListener extends EventEmitter
       else
         util.log "successfully connected to mail server"
         @emit "server:connected"
-        # 2. open INBOX
+        # 2. open mailbox
         @imap.openBox @mailbox, false, (err) =>
           if err
             util.log "error opening mail box '#{@mailbox}'  #{err}"
@@ -45,21 +45,21 @@ class MailListener extends EventEmitter
                 else              
                   util.log "found #{searchResults.length} emails"
                   # 5. fetch emails
-                  fetch = @imap.fetch searchResults,
-                    markSeen: true
-                    request:
-                      headers: false #['from', 'to', 'subject', 'date']
-                      body: "full"
-                  # 6. email was fetched. Parse it!   
-                  fetch.on "message", (msg) =>
-                    parser = new MailParser
-                    msg.on "data", (data) -> parser.write data.toString()
-                    parser.on "end", (mail) =>
-                      util.log "parsed mail" + util.inspect mail, false, 5
-                      @emit "mail:parsed", mail
-                    msg.on "end", ->
-                      util.log "fetched message: " + util.inspect(msg, false, 5)
-                      parser.end()
+                  @imap.fetch searchResults, 
+                    headers:
+                      parse: false
+                    body: true  
+                    cb: (fetch) =>
+                      # 6. email was fetched. Parse it!   
+                      fetch.on "message", (msg) =>
+                        parser = new MailParser
+                        parser.on "end", (mail) =>
+                          util.log "parsed mail" + util.inspect mail, false, 5
+                          @emit "mail:parsed", mail
+                        msg.on "data", (data) -> parser.write data.toString()
+                        msg.on "end", ->
+                          util.log "fetched message: " + util.inspect(msg, false, 5)
+                          parser.end()
   # stop listener
   stop: =>
     @imap.logout =>
