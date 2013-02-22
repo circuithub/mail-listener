@@ -28,6 +28,7 @@
         port: options.port,
         secure: options.secure
       });
+      this.mailbox = options.mailbox || "INBOX";
     }
 
     MailListener.prototype.start = function() {
@@ -39,12 +40,12 @@
         } else {
           util.log("successfully connected to mail server");
           _this.emit("server:connected");
-          return _this.imap.openBox("INBOX", false, function(err) {
+          return _this.imap.openBox(_this.mailbox, false, function(err) {
             if (err) {
-              util.log("error opening mail box " + err);
+              util.log("error opening mail box '" + _this.mailbox + "'  " + err);
               return _this.emit("error", err);
             } else {
-              util.log("successfully opened mail box");
+              util.log("successfully opened mail box '" + _this.mailbox + "'");
               return _this.imap.on("mail", function(id) {
                 util.log("new mail arrived with id " + id);
                 _this.emit("mail:arrived", id);
