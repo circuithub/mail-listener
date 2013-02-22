@@ -32,7 +32,7 @@ class MailListener extends EventEmitter
             util.log "error opening mail box '#{@mailbox}'  #{err}"
             @emit "error", err
           else
-            util.log "successfully opened mail box #{@mailbox}"            
+            util.log "successfully opened mail box '#{@mailbox}'"            
             # 3. listen for new emails in the inbox
             @imap.on "mail", (id) =>
               util.log "new mail arrived with id #{id}"

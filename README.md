@@ -25,7 +25,8 @@ var mailListener = new MailListener({
   password: "imap-password",
   host: "imap-host",
   port: 993, // imap port
-  secure: true // use secure connection
+  secure: true, // use secure connection
+  mailbox: "INBOX" // mailbox to monitor
 });
 
 mailListener.start();
@@ -60,6 +61,7 @@ mailListener = new MailListener
   host: "imap-host"
   port: 993 # imap port
   secure: true # use secure connection
+  mailbox: "INBOX" # mailbox to monitor
 
 
  # start listener. You can stop it calling `stop method`
