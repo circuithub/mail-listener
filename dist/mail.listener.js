@@ -18,9 +18,12 @@
     __extends(MailListener, _super);
 
     function MailListener(options) {
+      this._parseUnreadEmails = __bind(this._parseUnreadEmails, this);
+
       this.stop = __bind(this.stop, this);
 
       this.start = __bind(this.start, this);
+      this.fetchUnreadOnStart = options.fetchUnreadOnStart;
       this.imap = new ImapConnection({
         username: options.username,
         password: options.password,
@@ -35,51 +38,24 @@
       var _this = this;
       return this.imap.connect(function(err) {
         if (err) {
-          util.log("error connecting to mail server " + err);
+          util.log("connect to mail server: error " + err);
           return _this.emit("error", err);
         } else {
-          util.log("successfully connected to mail server");
+          util.log("connect to mail server: success");
           _this.emit("server:connected");
           return _this.imap.openBox(_this.mailbox, false, function(err) {
             if (err) {
-              util.log("error opening mail box '" + _this.mailbox + "'  " + err);
+              util.log("open mail box '" + _this.mailbox + "': error " + err);
               return _this.emit("error", err);
             } else {
-              util.log("successfully opened mail box '" + _this.mailbox + "'");
+              if (_this.fetchUnreadOnStart) {
+                _this._parseUnreadEmails();
+              }
+              util.log("open mail box '" + _this.mailbox + "': success");
               return _this.imap.on("mail", function(id) {
                 util.log("new mail arrived with id " + id);
                 _this.emit("mail:arrived", id);
-                return _this.imap.search(["UNSEEN"], function(err, searchResults) {
-                  if (err) {
-                    util.log("error searching unseen emails " + err);
-                    return _this.emit("error", err);
-                  } else {
-                    util.log("found " + searchResults.length + " emails");
-                    return _this.imap.fetch(searchResults, {
-                      headers: {
-                        parse: false
-                      },
-                      body: true,
-                      cb: function(fetch) {
-                        return fetch.on("message", function(msg) {
-                          var parser;
-                          parser = new MailParser;
-                          parser.on("end", function(mail) {
-                            util.log("parsed mail" + util.inspect(mail, false, 5));
-                            return _this.emit("mail:parsed", mail);
-                          });
-                          msg.on("data", function(data) {
-                            return parser.write(data.toString());
-                          });
-                          return msg.on("end", function() {
-                            util.log("fetched message: " + util.inspect(msg, false, 5));
-                            return parser.end();
-                          });
-                        });
-                      }
-                    });
-                  }
-                });
+                return _this._parseUnreadEmaisl();
               });
             }
           });
@@ -91,6 +67,41 @@
       var _this = this;
       return this.imap.logout(function() {
         return _this.emit("server:disconnected");
+      });
+    };
+
+    MailListener.prototype._parseUnreadEmails = function() {
+      var _this = this;
+      return this.imap.search(["UNSEEN"], function(err, searchResults) {
+        if (err) {
+          util.log("error searching unseen emails " + err);
+          return _this.emit("error", err);
+        } else {
+          util.log("found " + searchResults.length + " emails");
+          return _this.imap.fetch(searchResults, {
+            headers: {
+              parse: false
+            },
+            body: true,
+            cb: function(fetch) {
+              return fetch.on("message", function(msg) {
+                var parser;
+                parser = new MailParser;
+                parser.on("end", function(mail) {
+                  util.log("parsed mail" + util.inspect(mail, false, 5));
+                  return _this.emit("mail:parsed", mail);
+                });
+                msg.on("data", function(data) {
+                  return parser.write(data.toString());
+                });
+                return msg.on("end", function() {
+                  util.log("fetched message: " + util.inspect(msg, false, 5));
+                  return parser.end();
+                });
+              });
+            }
+          });
+        }
       });
     };
 
