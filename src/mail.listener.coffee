@@ -42,7 +42,7 @@ class MailListener extends EventEmitter
               util.log "new mail arrived with id #{id}"
               @emit "mail:arrived", id
               # 4. find all unseen emails 
-              @_parseUnreadEmaisl()
+              @_parseUnreadEmails()
               
   # stop listener
   stop: =>

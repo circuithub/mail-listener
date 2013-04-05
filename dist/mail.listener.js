@@ -55,7 +55,7 @@
               return _this.imap.on("mail", function(id) {
                 util.log("new mail arrived with id " + id);
                 _this.emit("mail:arrived", id);
-                return _this._parseUnreadEmaisl();
+                return _this._parseUnreadEmails();
               });
             }
           });
