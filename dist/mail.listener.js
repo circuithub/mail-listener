@@ -89,6 +89,7 @@
                 parser = new MailParser;
                 parser.on("end", function(mail) {
                   util.log("parsed mail" + util.inspect(mail, false, 5));
+                  mail.uid = msg.uid;
                   return _this.emit("mail:parsed", mail);
                 });
                 msg.on("data", function(data) {
@@ -103,6 +104,11 @@
           });
         }
       });
+    };
+
+    MailListener.prototype.move = function(msguids,mailboxes,cb) {
+      var _this = this;
+      return this.imap.move(msguids,mailboxes,cb);
     };
 
     return MailListener;
