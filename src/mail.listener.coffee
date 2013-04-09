@@ -67,10 +67,15 @@ class MailListener extends EventEmitter
               parser = new MailParser
               parser.on "end", (mail) =>
                 util.log "parsed mail" + util.inspect mail, false, 5
+                mail.uid = msg.uid
                 @emit "mail:parsed", mail
               msg.on "data", (data) -> parser.write data.toString()
               msg.on "end", ->
                 util.log "fetched message: " + util.inspect(msg, false, 5)
                 parser.end()
+
+  # move mailbox
+  move: (msguids, mailboxes, cb) =>
+    @imap.move msguids, mailboxes, cb
 
 module.exports = MailListener
