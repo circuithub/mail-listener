@@ -81,7 +81,7 @@ mailListener.on "error", (err) ->
 mailListener.on "mail:parsed", (mail) ->
   # do something with mail object including attachments
   console.log "parsed email with attachment", mail.attachments
-  // mail processing code goes here
+  ## mail processing code goes here
 ```
 
 That's easy!
