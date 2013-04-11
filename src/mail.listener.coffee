@@ -74,8 +74,7 @@ class MailListener extends EventEmitter
                 util.log "fetched message: " + util.inspect(msg, false, 5)
                 parser.end()
 
-  # move mailbox
-  move: (msguids, mailboxes, cb) =>
-    @imap.move msguids, mailboxes, cb
+  # imap
+  imap = @imap
 
 module.exports = MailListener

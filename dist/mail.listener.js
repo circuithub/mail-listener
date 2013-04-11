@@ -106,10 +106,7 @@
       });
     };
 
-    MailListener.prototype.move = function(msguids,mailboxes,cb) {
-      var _this = this;
-      return this.imap.move(msguids,mailboxes,cb);
-    };
+    MailListener.prototype.imap = this.imap;
 
     return MailListener;
 
