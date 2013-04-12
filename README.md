@@ -26,7 +26,7 @@ var mailListener = new MailListener({
   host: "imap-host",
   port: 993, // imap port
   secure: true, // use secure connection
-  mailbox: "INBOX" // mailbox to monitor
+  mailbox: "INBOX", // mailbox to monitor
   fetchUnreadOnStart: true // use it only if you want to get all unread email on lib start. Default is `false`
 });
 
