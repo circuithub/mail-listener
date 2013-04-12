@@ -46,6 +46,8 @@ mailListener.on("mail:parsed", function(mail){
   // mail processing code goes here
 });
 
+// it's possible to access imap object from node-imap library for performing additional actions. E.x.
+mailListener.imap.move(:msguids, :mailboxes, function(){}) 
 
 ```
 
@@ -82,6 +84,9 @@ mailListener.on "mail:parsed", (mail) ->
   # do something with mail object including attachments
   console.log "parsed email with attachment", mail.attachments
   ## mail processing code goes here
+
+## it's possible to access imap object from node-imap library for performing additional actions. E.x.
+mailListener.imap.move :msguids, :mailboxes, ->
 ```
 
 That's easy!
