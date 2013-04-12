@@ -14,6 +14,7 @@
   ImapConnection = require("imap").ImapConnection;
 
   MailListener = (function(_super) {
+    var imap;
 
     __extends(MailListener, _super);
 
@@ -106,7 +107,7 @@
       });
     };
 
-    MailListener.prototype.imap = this.imap;
+    imap = MailListener.imap;
 
     return MailListener;
 
