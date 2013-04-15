@@ -79,6 +79,10 @@
           return _this.emit("error", err);
         } else {
           util.log("found " + searchResults.length + " emails");
+          if (Array.isArray(searchResults) && searchResults.length === 0) {
+            util.log("no email were found");
+            return;
+          }
           return _this.imap.fetch(searchResults, {
             headers: {
               parse: false

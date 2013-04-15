@@ -56,6 +56,9 @@ class MailListener extends EventEmitter
         @emit "error", err
       else              
         util.log "found #{searchResults.length} emails"
+        if Array.isArray(searchResults) and searchResults.length == 0
+          util.log "no email were found"
+          return
         # 5. fetch emails
         @imap.fetch searchResults, 
           headers:
