@@ -9,6 +9,7 @@ class MailListener extends EventEmitter
   constructor: (options) ->
     # set this option to `true` if you want to fetch unread emial immediately on lib start.
     @fetchUnreadOnStart = options.fetchUnreadOnStart
+    @markSeen = options.markSeen
     # TODO add validation for required parameters
     @imap = new ImapConnection
       username: options.username
@@ -60,7 +61,10 @@ class MailListener extends EventEmitter
           util.log "no email were found"
           return
         # 5. fetch emails
-        @imap.fetch searchResults, 
+        params = {}
+        if @markSeen
+          params.markSeen = true
+        @imap.fetch searchResults, params, 
           headers:
             parse: false
           body: true  
