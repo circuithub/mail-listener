@@ -1,4 +1,4 @@
 node_modules/
 mail-listener.sublime-project
 mail-listener.sublime-workspace
-example.coffee
+*example.coffee
