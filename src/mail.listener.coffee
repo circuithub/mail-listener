@@ -1,4 +1,3 @@
-util             = require "util"
 {EventEmitter}   = require "events"
 {MailParser}     = require "mailparser"
 {ImapConnection} = require "imap"
@@ -24,23 +23,18 @@ class MailListener extends EventEmitter
     # 1. connect to imap server  
     @imap.connect (err) =>
       if err
-        util.log "connect to mail server: error #{err}"
         @emit "error", err
       else
-        util.log "connect to mail server: success"
         @emit "server:connected"
         # 2. open mailbox
         @imap.openBox @mailbox, false, (err) =>
           if err
-            util.log "open mail box '#{@mailbox}': error #{err}"
             @emit "error", err
           else
             if @fetchUnreadOnStart
               @_parseUnreadEmails()
-            util.log "open mail box '#{@mailbox}': success"
             # 3. listen for new emails in the inbox
             @imap.on "mail", (id) =>
-              util.log "new mail arrived with id #{id}"
               @emit "mail:arrived", id
               # 4. find all unseen emails 
               @_parseUnreadEmails()
@@ -53,12 +47,9 @@ class MailListener extends EventEmitter
   _parseUnreadEmails: =>
     @imap.search ["UNSEEN"], (err, searchResults) =>
       if err
-        util.log "error searching unseen emails #{err}"
         @emit "error", err
       else              
-        util.log "found #{searchResults.length} emails"
         if Array.isArray(searchResults) and searchResults.length == 0
-          util.log "no email were found"
           return
         # 5. fetch emails
         params = {}
@@ -73,12 +64,10 @@ class MailListener extends EventEmitter
             fetch.on "message", (msg) =>
               parser = new MailParser
               parser.on "end", (mail) =>
-                util.log "parsed mail" + util.inspect mail, false, 5
                 mail.uid = msg.uid
                 @emit "mail:parsed", mail
               msg.on "data", (data) -> parser.write data.toString()
               msg.on "end", ->
-                util.log "fetched message: " + util.inspect(msg, false, 5)
                 parser.end()
 
   # imap
