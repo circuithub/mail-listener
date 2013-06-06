@@ -5,8 +5,6 @@
     __hasProp = {}.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
-  util = require("util");
-
   EventEmitter = require("events").EventEmitter;
 
   MailParser = require("mailparser").MailParser;
@@ -38,22 +36,17 @@
 
       return this.imap.connect(function(err) {
         if (err) {
-          util.log("connect to mail server: error " + err);
           return _this.emit("error", err);
         } else {
-          util.log("connect to mail server: success");
           _this.emit("server:connected");
           return _this.imap.openBox(_this.mailbox, false, function(err) {
             if (err) {
-              util.log("open mail box '" + _this.mailbox + "': error " + err);
               return _this.emit("error", err);
             } else {
               if (_this.fetchUnreadOnStart) {
                 _this._parseUnreadEmails();
               }
-              util.log("open mail box '" + _this.mailbox + "': success");
               return _this.imap.on("mail", function(id) {
-                util.log("new mail arrived with id " + id);
                 _this.emit("mail:arrived", id);
                 return _this._parseUnreadEmails();
               });
@@ -78,12 +71,9 @@
         var params;
 
         if (err) {
-          util.log("error searching unseen emails " + err);
           return _this.emit("error", err);
         } else {
-          util.log("found " + searchResults.length + " emails");
           if (Array.isArray(searchResults) && searchResults.length === 0) {
-            util.log("no email were found");
             return;
           }
           params = {};
@@ -101,7 +91,6 @@
 
                 parser = new MailParser;
                 parser.on("end", function(mail) {
-                  util.log("parsed mail" + util.inspect(mail, false, 5));
                   mail.uid = msg.uid;
                   return _this.emit("mail:parsed", mail);
                 });
@@ -109,7 +98,6 @@
                   return parser.write(data.toString());
                 });
                 return msg.on("end", function() {
-                  util.log("fetched message: " + util.inspect(msg, false, 5));
                   return parser.end();
                 });
               });

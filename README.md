@@ -37,8 +37,8 @@ mailListener.on("server:connected", function(){
   console.log("imapConnected");
 });
   
-mailListener.on("server:error", function(error){
-  console.log("imapError", error);
+mailListener.on("mail:arrived", function(id){
+  console.log("new mail arrived with id:" + id);
 });
 
 mailListener.on("mail:parsed", function(mail){
