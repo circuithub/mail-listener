@@ -82,7 +82,7 @@
           }
           return _this.imap.fetch(searchResults, params, {
             headers: {
-              parse: false
+              parse: true
             },
             body: true,
             cb: function(fetch) {
