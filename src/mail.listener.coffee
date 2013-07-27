@@ -1,6 +1,6 @@
 {EventEmitter}   = require "events"
 {MailParser}     = require "mailparser"
-{ImapConnection} = require "imap"
+Imap = require "imap"
 
 # MailListener class. Can `emit` events in `node.js` fashion.
 class MailListener extends EventEmitter
@@ -10,18 +10,18 @@ class MailListener extends EventEmitter
     @fetchUnreadOnStart = options.fetchUnreadOnStart
     @markSeen = options.markSeen
     # TODO add validation for required parameters
-    @imap = new ImapConnection
-      username: options.username
+    @imap = new Imap
+      user: options.username
       password: options.password
       host: options.host
       port: options.port
-      secure: options.secure
+      tls: options.secure
     @mailbox = options.mailbox || "INBOX"
 
   # start listener
   start: => 
     # 1. connect to imap server  
-    @imap.connect (err) =>
+    @imap.once 'ready', (err) =>
       if err
         @emit "error", err
       else
@@ -38,6 +38,7 @@ class MailListener extends EventEmitter
               @emit "mail:arrived", id
               # 4. find all unseen emails 
               @_parseUnreadEmails()
+    @imap.connect()
               
   # stop listener
   stop: =>
@@ -55,20 +56,22 @@ class MailListener extends EventEmitter
         params = {}
         if @markSeen
           params.markSeen = true
-        @imap.fetch searchResults, params, 
-          headers:
-            parse: true
-          body: true  
-          cb: (fetch) =>
-            # 6. email was fetched. Parse it!   
-            fetch.on "message", (msg) =>
-              parser = new MailParser
-              parser.on "end", (mail) =>
-                mail.uid = msg.uid
-                @emit "mail:parsed", mail
-              msg.on "data", (data) -> parser.write data.toString()
-              msg.on "end", ->
-                parser.end()
+        
+        fetch = @imap.fetch(searchResults, { bodies: '' })
+        # 6. email was fetched. Parse it!   
+        fetch.on "message", (msg, id) =>
+          parser = new MailParser
+          parser.on "end", (mail) =>
+            mail.uid = id
+            @emit "mail:parsed", mail
+          msg.on "body", (stream, info) => 
+            buffer = '';
+            stream.on "data", (chunk) =>
+              buffer += chunk
+            stream.once "end", ->
+              parser.write buffer
+          msg.on "end", ->
+            parser.end()
 
   # imap
   imap = @imap
