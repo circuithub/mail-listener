@@ -3,7 +3,7 @@
   "name": "mail-listener",
   "description": "Mail listener library for node.js. Get notification when new email arrived.",
   "keywords": ["mail", "job", "imap", "mail listener", "email", "email parser"],
-  "version": "0.7.1",
+  "version": "0.7.2",
   "repository": {
     "type": "git",
     "url": "git://github.com/circuithub/mail-listener.git"
@@ -13,7 +13,7 @@
     "node": ">=0.8.10"
   },
   "dependencies": {
-    "imap": ">=0.7.8",
+    "imap": ">=0.8.0",
     "mailparser": ">=0.3.4"
   },
   "devDependencies": {
