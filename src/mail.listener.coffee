@@ -53,11 +53,10 @@ class MailListener extends EventEmitter
         if Array.isArray(searchResults) and searchResults.length == 0
           return
         # 5. fetch emails
-        params = {}
         if @markSeen
-          params.markSeen = true
+          markSeen = true
         
-        fetch = @imap.fetch(searchResults, { bodies: '' })
+        fetch = @imap.fetch(searchResults, { bodies: '', markSeen: markSeen })
         # 6. email was fetched. Parse it!   
         fetch.on "message", (msg, id) =>
           parser = new MailParser

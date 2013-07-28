@@ -67,19 +67,19 @@
     MailListener.prototype._parseUnreadEmails = function() {
       var _this = this;
       return this.imap.search(["UNSEEN"], function(err, searchResults) {
-        var fetch, params;
+        var fetch, markSeen;
         if (err) {
           return _this.emit("error", err);
         } else {
           if (Array.isArray(searchResults) && searchResults.length === 0) {
             return;
           }
-          params = {};
           if (_this.markSeen) {
-            params.markSeen = true;
+            markSeen = true;
           }
           fetch = _this.imap.fetch(searchResults, {
-            bodies: ''
+            bodies: '',
+            markSeen: markSeen
           });
           return fetch.on("message", function(msg, id) {
             var parser;
