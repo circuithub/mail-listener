@@ -5,7 +5,7 @@ Imap = require "imap"
 # MailListener class. Can `emit` events in `node.js` fashion.
 class MailListener extends EventEmitter
 
-  constructor: (options) ->
+  constructor: (options, parserOptions) ->
     # set this option to `true` if you want to fetch unread emial immediately on lib start.
     @fetchUnreadOnStart = options.fetchUnreadOnStart
     @markSeen = options.markSeen
@@ -17,6 +17,7 @@ class MailListener extends EventEmitter
       port: options.port
       tls: options.secure
     @mailbox = options.mailbox || "INBOX"
+    @parserOptions = parserOptions
 
   # start listener
   start: => 
@@ -59,7 +60,7 @@ class MailListener extends EventEmitter
         fetch = @imap.fetch(searchResults, { bodies: '', markSeen: markSeen })
         # 6. email was fetched. Parse it!   
         fetch.on "message", (msg, id) =>
-          parser = new MailParser
+          parser = new MailParser @parserOptions
           parser.on "end", (mail) =>
             mail.uid = id
             @emit "mail:parsed", mail
