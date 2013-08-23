@@ -16,7 +16,7 @@
 
     __extends(MailListener, _super);
 
-    function MailListener(options) {
+    function MailListener(options, parserOptions) {
       this._parseUnreadEmails = __bind(this._parseUnreadEmails, this);
       this.stop = __bind(this.stop, this);
       this.start = __bind(this.start, this);
@@ -30,6 +30,7 @@
         tls: options.secure
       });
       this.mailbox = options.mailbox || "INBOX";
+      this.parserOptions = parserOptions;
     }
 
     MailListener.prototype.start = function() {
@@ -83,7 +84,7 @@
           });
           return fetch.on("message", function(msg, id) {
             var parser;
-            parser = new MailParser;
+            parser = new MailParser(_this.parserOptions);
             parser.on("end", function(mail) {
               mail.uid = id;
               return _this.emit("mail:parsed", mail);
